@@ -1,0 +1,15 @@
+//create bill
+{
+    "type": "buy",
+    "date": "2024-02-27",
+    "products": [
+        {
+            "product": 5,
+            "quantity": 10
+        },{
+            "product": 16,
+            "quantity": 1
+        }
+    ],
+    "price": "1000.00"
+}
