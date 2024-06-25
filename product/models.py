@@ -3,7 +3,8 @@ import os
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+
+from django.conf import settings
 
 
 def product_image_path(instance, filename):
@@ -105,7 +106,7 @@ def update_product_stock(sender, instance, **kwargs):
         instance.product.save()
         
 class Sale(models.Model):
-    user = models.ForeignKey(User, related_name='sale_to', null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sale_to', null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     date = models.DateField()

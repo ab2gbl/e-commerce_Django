@@ -5,6 +5,8 @@ urlpatterns = [
 	path('create/', views.create_product.as_view()),
   	path('product/<int:pk>', views.edit_product.as_view()),
 	path('bills/', views.list_bills.as_view()),
+	path('createbills/', views.create_bills.as_view()),
+ 
   	#path('bill/<int:pk>', views.edit_bills.as_view()),
 	#path('createbill/', views.create_bill.as_view()),
  	path('billitems/', views.list_billItems.as_view()),
