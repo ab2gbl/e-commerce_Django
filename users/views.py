@@ -3,7 +3,6 @@ from rest_framework import generics
 from product.models import *	
 from .models import *
 from rest_framework.permissions import IsAdminUser,IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
 # Create your views here.
 class createClient(generics.CreateAPIView):
     queryset = Client.objects.filter(role=User.Role.CLIENT)
@@ -25,6 +24,5 @@ class myInfo(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
     
-    authentication_classes = [TokenAuthentication]
     permission_classes=[IsAuthenticated]
     

@@ -1,7 +1,7 @@
 
 from rest_framework import generics
 from product.models import *	
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser,IsAuthenticated
 from .serializers import *
 # Create your views here.
 
@@ -19,7 +19,7 @@ class create_product(generics.CreateAPIView):
 class edit_product(generics.RetrieveUpdateDestroyAPIView):   
     queryset = Product.objects.all()
     serializer_class = ProductSerializer	
-    permission_classes=[IsAdminUser]
+    permission_classes=[IsAuthenticated]
     
     	
 
