@@ -22,6 +22,7 @@ services:
     depends_on:
       - db
     environment:
+      DJANGO_SECRET_KEY: django-insecure-%#en!j)rk9f(^w=_t*-pw0wht-t7d-(9+uy-n!=p*us3z0*-fs
       POSTGRES_DB: ecommerce
       POSTGRES_USER: ecommerceuser
       POSTGRES_PASSWORD: ecommercepass
