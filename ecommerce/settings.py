@@ -29,12 +29,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'unsafe-default-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '127.0.0.1:3000',
-    'localhost'
-    ]
-
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Application definition
 
@@ -188,3 +183,10 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES':
     #     ['rest_framework.permissions.IsAuthenticated'],
 }
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = False  # This is the new setting name in recent versions
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
