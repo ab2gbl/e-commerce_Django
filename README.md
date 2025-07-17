@@ -222,6 +222,76 @@ Authorization: Bearer <your-access-token>
 
 ---
 
+## Running with Docker
+
+This project is Docker-ready for easy deployment and development. Below are the main steps and commands for working with Docker:
+
+### 1. Build and Start the Containers
+```bash
+docker compose build
+docker compose up -d
+```
+- `build` builds the images (run this after changing requirements or Dockerfile).
+- `up -d` starts the containers in detached mode.
+
+### 2. Run Migrations
+```bash
+docker compose exec web python manage.py migrate
+```
+- Applies all database migrations inside the running Django container.
+
+### 3. Create a Superuser
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+- Follow the prompts to set up your admin account.
+
+### 4. Collect Static Files
+```bash
+docker compose exec web python manage.py collectstatic
+```
+- Collects all static files (including admin CSS/JS) into the directory specified by `STATIC_ROOT`.
+- Make sure `STATIC_ROOT` is set in your `settings.py` (e.g., `os.path.join(BASE_DIR, 'staticfiles')`).
+
+### 5. Import Data from data.json (Optional)
+If you have exported data from SQLite or another source:
+```bash
+docker compose exec web python manage.py loaddata data.json
+```
+- Make sure `data.json` is accessible inside the container (mount your project directory as a volume if needed).
+
+### 6. Stopping and Restarting Containers
+- Stop containers:
+  ```bash
+  docker compose down
+  ```
+- Restart containers after code or requirements changes:
+  ```bash
+  docker compose build
+  docker compose up -d
+  ```
+
+### 7. Volumes for Media and Static Files
+- Your `docker compose.yml` should mount volumes for `media/` and `staticfiles/` to persist uploads and static assets:
+  ```yaml
+  volumes:
+    - ./media:/app/media
+    - ./staticfiles:/app/staticfiles
+  ```
+
+### 8. Troubleshooting
+- **Admin page has no CSS?**
+  - Make sure you ran `collectstatic` and set up `STATIC_ROOT`.
+  - Consider using [WhiteNoise](https://whitenoise.evans.io/en/stable/) for static file serving in production.
+- **Database connection errors?**
+  - Check your environment variables and service names in `docker-compose.yml`.
+- **Code changes not reflected?**
+  - If using a volume (`.:/app`), changes are live. Otherwise, rebuild the image.
+- **Import errors with data.json?**
+  - Ensure the file is present inside the container and matches your current models.
+
+---
+
 ## Media & Static Files
 - Product images are uploaded to `media/upload/products/`.
 - Configure `MEDIA_URL` and `MEDIA_ROOT` in `settings.py` as needed.
