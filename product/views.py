@@ -18,7 +18,7 @@ class create_product(generics.CreateAPIView):
     
 class edit_product(generics.RetrieveUpdateDestroyAPIView):   
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer	
+    serializer_class = CreateProductSerializer	
     permission_classes=[IsAdminUser]
 
 class get_product(generics.RetrieveAPIView):

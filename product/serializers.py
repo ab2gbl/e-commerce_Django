@@ -99,6 +99,42 @@ class CreateProductSerializer(serializers.ModelSerializer):
         
 
         return phone 
+    
+    def update(self, instance, validated_data):
+        # Update Product fields
+        instance.type = validated_data.get('type', instance.type)
+        instance.brand = validated_data.get('brand', instance.brand)
+        instance.name = validated_data.get('name', instance.name)
+        instance.image = validated_data.get('image', instance.image)
+        instance.price = validated_data.get('price', instance.price)
+        instance.save()
+
+        # Update details based on type
+        if instance.type == 'phone':
+            phone = getattr(instance, 'phone_product', None)
+            if phone:
+                phone.dimensions = validated_data.get('dimensions', phone.dimensions)
+                phone.weight = validated_data.get('weight', phone.weight)
+                phone.cpu = validated_data.get('cpu', phone.cpu)
+                phone.memory = validated_data.get('memory', phone.memory)
+                phone.ram = validated_data.get('ram', phone.ram)
+                phone.battery = validated_data.get('battery', phone.battery)
+                phone.camera = validated_data.get('camera', phone.camera)
+                phone.os = validated_data.get('os', phone.os)
+                phone.other_details = validated_data.get('other_details', phone.other_details)
+                phone.save()
+        elif instance.type == 'accessory':
+            accessory = getattr(instance, 'accessory_product', None)
+            if accessory:
+                accessory.dimensions = validated_data.get('dimensions', accessory.dimensions)
+                accessory.weight = validated_data.get('weight', accessory.weight)
+                accessory.other_details = validated_data.get('other_details', accessory.other_details)
+                accessory.save()
+        else:
+            raise serializers.ValidationError("this type of products does not exist")
+
+        return instance
+# ...existing code...
 
 
 
