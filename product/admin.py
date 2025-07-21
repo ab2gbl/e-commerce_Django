@@ -6,6 +6,5 @@ admin.site.register(Phone)
 admin.site.register(Accessory)
 admin.site.register(Bill)
 admin.site.register(BillItem)
-admin.site.register(Sale)
 
 

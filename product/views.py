@@ -82,8 +82,11 @@ class edit_billItems(generics.RetrieveUpdateDestroyAPIView):
     permission_classes=[IsAdminUser] 
 
 
-class list_sales(generics.ListCreateAPIView):
-    queryset = Sale.objects.all()
-    serializer_class = SaleSerializer
-    
-    #permission_classes=[IsAdminUser] 
+# Remove list_sales and any Sale-related views 
+
+class MyBillsListView(generics.ListAPIView):
+    serializer_class = BillSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Bill.objects.filter(user=self.request.user) 

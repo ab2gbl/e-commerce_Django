@@ -12,9 +12,8 @@ urlpatterns = [
 	#path('createbill/', views.create_bill.as_view()),
  	path('billitems/', views.list_billItems.as_view()),
   	#path('billitem/<int:pk>', views.edit_billItems.as_view()),
-   	path('sales/', views.list_sales.as_view()),
-
-	
+   	
+    path('mybills/', views.MyBillsListView.as_view()),
 
  
 ]

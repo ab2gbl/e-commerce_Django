@@ -20,7 +20,7 @@ class Product (models.Model):
     brand = models.CharField(max_length=50)
     name = models.CharField(max_length=200)
     image = models.ImageField(upload_to=product_image_path)
-    price = models.DecimalField(max_digits=6,decimal_places=3)
+    price = models.DecimalField(max_digits=10,decimal_places=2)
     in_stock =models.PositiveIntegerField(default=0)
     available = models.BooleanField(default=False)
     
@@ -76,8 +76,16 @@ class Bill(models.Model):
     date = models.DateField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     products = models.ManyToManyField(Product, through='BillItem')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='bills'
+    )
 
     def __str__(self):
+        if self.type == 'sell' and self.user:
+            return f"Sale to {self.user.username} - {self.date}"
         return f"{self.get_type_display()} Bill - {self.date}"
     
     
@@ -104,27 +112,3 @@ def update_product_stock(sender, instance, **kwargs):
     elif instance.bill.type == 'sell':
         instance.product.in_stock -= instance.quantity
         instance.product.save()
-        
-class Sale(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sale_to', null=True, on_delete=models.SET_NULL)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    date = models.DateField()
-    paid = models.BooleanField(default=False)
-    #localisation    
-
-    def __str__(self):
-        return f"{self.user.username} bought {self.quantity} {self.product.name} - {self.date}"
-    
-    def clean(self):
-        if self.quantity > self.product.in_stock:
-            raise ValidationError({'quantity': 'Not enough stock available for the product.'})
-    
-    def save(self, *args, **kwargs):
-        # Check if the 'paid' field has changed to True
-        if self.pk and self.paid and not Sale.objects.get(pk=self.pk).paid:
-            # Update the in_stock value of the associated product
-            self.product.in_stock -= self.quantity
-            self.product.save()
-
-        super().save(*args, **kwargs)

@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import *
+from django.conf import settings
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class ProductSerializer(serializers.ModelSerializer):
     details = serializers.SerializerMethodField()
@@ -134,7 +137,6 @@ class CreateProductSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("this type of products does not exist")
 
         return instance
-# ...existing code...
 
 
 
@@ -160,12 +162,17 @@ class CreateBillItemSerializer(serializers.Serializer):
         fields = ['product','quantity']
 
 class BillSerializer(serializers.ModelSerializer):
-    products = CreateBillItemSerializer(many=True,write_only=True)
+    products = CreateBillItemSerializer(many=True, write_only=True)
     products_details = serializers.SerializerMethodField()
-
+    user = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field='username',
+        required=False,
+        allow_null=True
+    )
     class Meta:
         model = Bill
-        fields = ['id','type', 'date', 'products', 'price','products_details']
+        fields = ['id', 'type', 'date', 'products', 'price', 'products_details', 'user']
         
     def get_products_details(self, instance):
         bill_items = instance.billitem_set.all()  
@@ -183,11 +190,3 @@ class BillSerializer(serializers.ModelSerializer):
             BillItem.objects.create(bill=bill, product=product, quantity=quantity)
 
         return bill
-
-
-class SaleSerializer(serializers.ModelSerializer):
-    paid=serializers.BooleanField(read_only=True)
-
-    class Meta:
-        model = Sale
-        fields = ['id','user','product','quantity','date','paid']
