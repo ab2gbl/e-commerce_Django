@@ -41,7 +41,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
     brand = serializers.CharField(max_length=50,write_only=True)
     name = serializers.CharField(max_length=200,write_only=True)
     image = serializers.ImageField(write_only=True)
-    price = serializers.DecimalField(max_digits=6, decimal_places=3,write_only=True)
+    price = serializers.DecimalField(max_digits=10, decimal_places=3,write_only=True)
 
     class Meta:
         model = Phone 
